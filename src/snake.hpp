@@ -4,19 +4,21 @@
 #include <vector>
 #include "coordinates.hpp"
 #include "tiled_render.hpp"
+#include "queue"
 
 namespace game {
 
 	struct SnakeParts {
 		std::vector<engine::SimpleTile> tiles;
-		size_t index;
 	};
 
 	class Snake {
 	private:
 		SnakeParts parts;
+		std::queue<engine::SimpleTile> eatenTiles;
 		Vec2 dir;
 		Vec2 mapLimit;
+		bool isEatenTileBuffered;
 
 		void move();
 
@@ -28,10 +30,14 @@ namespace game {
 
 		void process(GLFWwindow* window, float deltaTime);
 
-		size_t getSize();
+		void integrateEatenTile();
 
-		SnakeParts getParts();
+		void on_collision(Vec2 colPos);
 
-		std::span<engine::SimpleTile> extractUsedTiles();
+		engine::SimpleTile getHead();
+
+		engine::SimpleTile getTail();
+
+		std::vector<engine::SimpleTile> getParts();
 	};
 }

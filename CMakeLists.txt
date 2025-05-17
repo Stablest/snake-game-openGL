@@ -24,7 +24,7 @@ else()
     message(STATUS "Found GLFW library at ${GLFW_LIB}")
 endif()
 
-add_executable(SnakeGameOpenGL src/main.cpp "src/window.cpp" "src/engine.cpp" "src/tiled_render.cpp" "src/frame.cpp"  "src/game.cpp" "src/snake.cpp" "third-parties/glad.c"  "src/shader.cpp")
+add_executable(SnakeGameOpenGL src/main.cpp "src/window.cpp" "src/engine.cpp" "src/tiled_render.cpp" "src/frame.cpp"  "src/game.cpp" "src/snake.cpp" "third-parties/glad.c"  "src/shader.cpp" "src/food.cpp")
 
 target_link_libraries(SnakeGameOpenGL PRIVATE ${GLFW_LIB})
 

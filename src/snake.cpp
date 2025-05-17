@@ -5,12 +5,30 @@
 
 namespace game {
 
-	game::Snake::Snake(SnakeParts parts, Vec2 dir, Vec2 mapLimit) : parts(parts), dir(dir), mapLimit(mapLimit) {
+	game::Snake::Snake(SnakeParts parts, Vec2 dir, Vec2 mapLimit) : parts(parts), eatenTiles(std::queue<engine::SimpleTile>()), dir(dir), mapLimit(mapLimit), isEatenTileBuffered(false) {
 	}
 
 	void game::Snake::process(GLFWwindow* window, float deltaTime) {
+
 		processInput(window, deltaTime);
+		integrateEatenTile();
 		move();
+	}
+
+	void game::Snake::integrateEatenTile() {
+		if (eatenTiles.size() == 0) {
+			return;
+		}
+		if (isEatenTileBuffered) {
+			parts.tiles.push_back(eatenTiles.front());
+			eatenTiles.pop();
+		}
+		if (eatenTiles.size() == 0) {
+			return;
+		}
+		if (eatenTiles.front().position == getTail().position) {
+			isEatenTileBuffered = true;
+		}
 	}
 
 	void game::Snake::move() {
@@ -74,17 +92,20 @@ namespace game {
 		}
 	}
 
-	size_t game::Snake::getSize() {
-		return parts.index;
+	void game::Snake::on_collision(Vec2 colPos) {
+		eatenTiles.push(engine::SimpleTile{ colPos, Vec3f{0, 0, 0}, 0 });
 	}
 
-	SnakeParts game::Snake::getParts() {
-		return parts;
+	engine::SimpleTile game::Snake::getHead() {
+		return parts.tiles[0];
 	}
 
-	std::span<engine::SimpleTile> game::Snake::extractUsedTiles() {
-		std::span<engine::SimpleTile> const_view(parts.tiles);
-		return const_view.subspan(0, parts.index);
+	engine::SimpleTile game::Snake::getTail() {
+		return parts.tiles[parts.tiles.size() - 1];
+	}
+
+	std::vector<engine::SimpleTile> game::Snake::getParts() {
+		return parts.tiles;
 	}
 
 }

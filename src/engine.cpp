@@ -30,7 +30,8 @@ namespace engine {
 			double frameStart = glfwGetTime();
 
 			const float deltaTime = frame.calculateDeltaTime();
-			std::span<engine::SimpleTile> tiles = game.process(deltaTime);
+			std::vector<engine::SimpleTile> tilesVec = game.process(deltaTime);
+			std::span<engine::SimpleTile> tiles = tilesVec;
 			render.draw(tiles);
 
 			double frameEnd = glfwGetTime();

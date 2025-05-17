@@ -6,6 +6,7 @@
 #include "snake.hpp"
 #include "tiled_render.hpp"
 #include "span"
+#include "food.hpp"
 
 namespace game {
 
@@ -15,7 +16,7 @@ namespace game {
 		game::Snake snake;
 		std::vector<engine::SimpleTile> map;
 		Vec2 mapSize;
-		engine::SimpleTile point;
+		Food food;
 
 		void initMap(Vec2 mapSize);
 	public:
@@ -23,6 +24,10 @@ namespace game {
 
 		~Game();
 
-		std::span<engine::SimpleTile> process(float deltaTime);
+		std::vector<engine::SimpleTile> process(float deltaTime);
+
+		Vec2 generateRandomMapPosition();
+
+		void verifyAndValidateCollisions();
 	};
 }

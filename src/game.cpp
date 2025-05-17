@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <iterator>
 #include "span"
+#include "unordered_set"
+#include <random>
 
 
 namespace game {
@@ -25,8 +27,8 @@ namespace game {
 	game::Game::Game(GLFWwindow* window, Vec2 mapSize)
 		: window(window)
 		, mapSize(mapSize)
-		, snake(SnakeParts{ std::vector<engine::SimpleTile>(1, {Vec2{mapSize.x / 2, mapSize.y / 2 }, Vec3f{0, 0, 0}, 0}), 1 }, Vec2{ 0, 1 }, mapSize)
-		, point(engine::SimpleTile{ Vec2 {20, 20}, Vec3f{0, 255, 0 }, 5 })
+		, snake(SnakeParts{ std::vector<engine::SimpleTile>(1, {Vec2{mapSize.x / 2, mapSize.y / 2 }, Vec3f{0, 0, 0}, 0}) }, Vec2{ 0, 1 }, mapSize)
+		, food(Vec2{ mapSize.x / 2, 4 + mapSize.y / 2 })
 	{
 		initMap(mapSize);
 	}
@@ -35,9 +37,35 @@ namespace game {
 
 	}
 
-	std::span<engine::SimpleTile> game::Game::process(float deltaTime) {
+	void game::Game::verifyAndValidateCollisions() {
+		engine::SimpleTile head = snake.getHead();
+		if (head.position == food.tile.position) {
+			food.on_collision(generateRandomMapPosition());
+			snake.on_collision(head.position);
+		}
+	}
+
+	Vec2 game::Game::generateRandomMapPosition() {
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+
+		std::uniform_int_distribution<> distX(0, mapSize.x);
+		std::uniform_int_distribution<> distY(0, mapSize.y);
+
+		return Vec2{ distX(gen), distY(gen) };
+	}
+
+	std::vector<engine::SimpleTile> game::Game::process(float deltaTime) {
 		snake.process(window, deltaTime);
-		return snake.extractUsedTiles();
+		verifyAndValidateCollisions();
+		std::vector<engine::SimpleTile> snakeParts = snake.getParts();
+		std::vector<engine::SimpleTile> toRenderTiles;
+		toRenderTiles.reserve(snakeParts.size() + 1);
+		for (auto& snakePart : snakeParts) {
+			toRenderTiles.push_back(snakePart);
+		}
+		toRenderTiles.push_back(food.tile);
+		return toRenderTiles;
 	}
 
 }
