@@ -33,6 +33,13 @@ namespace engine {
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
+	void engine::TiledRender::resetTileMapState() {
+		for (auto& tile : tileMap) {
+			tile.second.colorRGB = Vec3f{ 0.0f, 0.5f, 0.0f };
+			tile.second.padding = 0;
+		}
+	}
+
 	void engine::TiledRender::updateModifiedTiles(std::span<SimpleTile> simpleTiles) {
 		for (int i = 0; i < simpleTiles.size(); ++i) {
 			auto iterator = tileMap.find(simpleTiles[i].position);
@@ -48,24 +55,26 @@ namespace engine {
 
 	void engine::TiledRender::draw(std::span<engine::SimpleTile> simpleTiles) {
 		glClear(GL_COLOR_BUFFER_BIT);
-
+		resetTileMapState();
 		updateModifiedTiles(simpleTiles);
-		std::vector<Vec3f> vertices;
-		vertices.reserve(tileMap.size() * sizeof(Tile));
+		std::vector<Vertex> vertices;
+		vertices.reserve(tileMap.size() * sizeof(Vertex) * 6);
 
 		for (const auto& [key, value] : tileMap) {
 			for (const auto& position : value.positions) {
-				vertices.push_back(position);
+				vertices.push_back(Vertex{ position, value.colorRGB });
 			}
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vec3f) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3f), 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, colorRGB));
+		glEnableVertexAttribArray(1);
 
 		glm::mat4 cameraOrtho = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
 

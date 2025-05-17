@@ -17,7 +17,7 @@ namespace game {
 		map = std::vector<engine::SimpleTile>(mapSize.x * mapSize.y);
 		for (int y = 0; y < mapSize.y; y++) {
 			for (int x = 0; x < mapSize.x; x++) {
-				map.push_back(engine::SimpleTile{ Vec2{ x, y}, Vec3{ 0, 0, 0}, 0 });
+				map.push_back(engine::SimpleTile{ Vec2{ x, y}, Vec3f{ 0, 0, 0}, 0 });
 			}
 		}
 	}
@@ -25,8 +25,8 @@ namespace game {
 	game::Game::Game(GLFWwindow* window, Vec2 mapSize)
 		: window(window)
 		, mapSize(mapSize)
-		, snake(SnakeParts{ std::vector<engine::SimpleTile>(1, {Vec2{0, 0}, Vec3{0, 0, 0}, 0}), 1 }, Vec2{ 0, 0 })
-		, point(engine::SimpleTile{ Vec2 {20, 20}, Vec3{0, 255, 0 }, 5 })
+		, snake(SnakeParts{ std::vector<engine::SimpleTile>(1, {Vec2{mapSize.x / 2, mapSize.y / 2 }, Vec3f{0, 0, 0}, 0}), 1 }, Vec2{ 0, 1 }, mapSize)
+		, point(engine::SimpleTile{ Vec2 {20, 20}, Vec3f{0, 255, 0 }, 5 })
 	{
 		initMap(mapSize);
 	}

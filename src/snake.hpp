@@ -8,7 +8,7 @@
 namespace game {
 
 	struct SnakeParts {
-		std::vector<engine::SimpleTile> positions;
+		std::vector<engine::SimpleTile> tiles;
 		size_t index;
 	};
 
@@ -16,13 +16,17 @@ namespace game {
 	private:
 		SnakeParts parts;
 		Vec2 dir;
+		Vec2 mapLimit;
 
-	public:
-		Snake(SnakeParts snakeParts, Vec2 dir);
-
-		void process(GLFWwindow* window, float deltaTime);
+		void move();
 
 		void processInput(GLFWwindow* window, float deltaTime);
+
+		void normalizeMapDirection();
+	public:
+		Snake(SnakeParts snakeParts, Vec2 dir, Vec2 mapLimit);
+
+		void process(GLFWwindow* window, float deltaTime);
 
 		size_t getSize();
 

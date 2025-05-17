@@ -7,6 +7,22 @@ struct Vec2 {
 	int x;
 	int y;
 
+	static Vec2 UP() {
+		return Vec2{ 0 , -1 };
+	}
+
+	static Vec2 RIGHT() {
+		return Vec2{ 1 , 0 };
+	}
+
+	static Vec2 DOWN() {
+		return Vec2{ 0 , 1 };
+	}
+
+	static Vec2 LEFT() {
+		return Vec2{ -1 , 0 };
+	}
+
 	Vec2 operator/(Vec2 const& obj) {
 		return Vec2{ x / obj.x, y / obj.y };
 	}
