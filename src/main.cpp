@@ -1,9 +1,9 @@
 ﻿#include "main.h"
-
-using namespace std;
+#include "engine.hpp"
+#include "iostream"
 
 int main()
 {
-
+	engine::start();
 	return 0;
 }

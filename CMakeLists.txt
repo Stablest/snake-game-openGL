@@ -10,8 +10,8 @@ if (POLICY CMP0141)
 endif()
 
 project(SnakeGameOpenGL)
-
-set(CMAKE_CXX_STANDARD 17)
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>")
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(src)
@@ -24,12 +24,18 @@ else()
     message(STATUS "Found GLFW library at ${GLFW_LIB}")
 endif()
 
-add_executable(SnakeGameOpenGL src/main.cpp)
+add_executable(SnakeGameOpenGL src/main.cpp "src/window.cpp" "src/engine.cpp" "src/tiled_render.cpp" "src/frame.cpp"  "src/game.cpp" "src/snake.cpp" "third-parties/glad.c"  "src/shader.cpp")
 
 target_link_libraries(SnakeGameOpenGL PRIVATE ${GLFW_LIB})
+
 target_include_directories(SnakeGameOpenGL
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include
 )
+
+add_custom_command(TARGET SnakeGameOpenGL POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources/shaders
+        $<TARGET_FILE_DIR:SnakeGameOpenGL>/resources/shaders)
