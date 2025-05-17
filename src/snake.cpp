@@ -23,28 +23,30 @@ namespace game {
 				localTiles[i].position = localTiles[i + 1].position;
 			}
 			else {
-				localTiles[i].position = Vec2{ localTiles[i].position.x + dir.x, localTiles[i].position.y + dir.y };
+				Vec2 nextPos = Vec2{ localTiles[i].position.x + dir.x, localTiles[i].position.y + dir.y };
+				localTiles[i].position = normalizeHeadNextPos(nextPos);
 			}
 		}
 	}
 
-	void game::Snake::normalizeMapDirection() {
-		//if (dir.x < 0) {
-		//	dir.x = mapLimit.x - 1;
-		//}
-		//else {
-		//	if (dir.x > (mapLimit.x - 1)) {
-		//		dir.x = 0;
-		//	}
-		//}
-		//if (dir.y < 0) {
-		//	dir.y = mapLimit.y - 1;
-		//}
-		//else {
-		//	if (dir.y > (mapLimit.y - 1)) {
-		//		dir.y = 0;
-		//	}
-		//}
+	Vec2 game::Snake::normalizeHeadNextPos(Vec2& nextPos) const {
+		if (nextPos.x < 0) {
+			nextPos.x = mapLimit.x - 1;
+		}
+		else {
+			if (nextPos.x > (mapLimit.x - 1)) {
+				nextPos.x = 0;
+			}
+		}
+		if (nextPos.y < 0) {
+			nextPos.y = mapLimit.y - 1;
+		}
+		else {
+			if (nextPos.y > (mapLimit.y - 1)) {
+				nextPos.y = 0;
+			}
+		}
+		return nextPos;
 	}
 
 	void game::Snake::processInput(GLFWwindow* window, float deltaTime) {

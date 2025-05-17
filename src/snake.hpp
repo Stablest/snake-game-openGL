@@ -22,7 +22,7 @@ namespace game {
 
 		void processInput(GLFWwindow* window, float deltaTime);
 
-		void normalizeMapDirection();
+		Vec2 normalizeHeadNextPos(Vec2& nextPos) const;
 	public:
 		Snake(SnakeParts snakeParts, Vec2 dir, Vec2 mapLimit);
 
