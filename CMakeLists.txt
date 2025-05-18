@@ -14,8 +14,6 @@ add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(src)
-
 # Find the glfw3 library
 find_library(GLFW_LIB glfw3 PATHS ${PROJECT_SOURCE_DIR}/third-parties)
 if (NOT GLFW_LIB)
