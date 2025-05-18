@@ -55,9 +55,12 @@ namespace game {
 		return Vec2{ distX(gen), distY(gen) };
 	}
 
-	std::vector<engine::SimpleTile> game::Game::process(float deltaTime) {
-		snake.process(window, deltaTime);
+	void game::Game::physicsProcess(float deltaTime) {
 		verifyAndValidateCollisions();
+		snake.process(window, deltaTime);
+	}
+
+	std::vector<engine::SimpleTile> game::Game::draw(float deltaTime) {
 		std::vector<engine::SimpleTile> snakeParts = snake.getParts();
 		std::vector<engine::SimpleTile> toRenderTiles;
 		toRenderTiles.reserve(snakeParts.size() + 1);
@@ -66,6 +69,10 @@ namespace game {
 		}
 		toRenderTiles.push_back(food.tile);
 		return toRenderTiles;
+	}
+
+	void game::Game::process(float deltaTime) {
+		snake.processInput(window, deltaTime);
 	}
 
 }

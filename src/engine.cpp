@@ -13,11 +13,13 @@
 namespace engine {
 
 	int start() {
-		constexpr float TARGET_FPS = 4.0f;
-		constexpr float TARGET_FRAME_TIME = 1.0f / TARGET_FPS;
+		constexpr float TARGET_LOOPS_SEC = 8;
+		constexpr float TARGET_LOOP_TIME = 1.0F / TARGET_LOOPS_SEC;
+
 		Vec2 windowSize{ 800, 600 };
 		window::WindowData windowData = window::WindowData{ windowSize.x, windowSize.y, std::string("Snake openGL") };
 		Frame frame;
+		Frame physicsFrame;
 		GLFWwindow* window = window::initDefaultWindow(windowData);
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 			throw std::runtime_error("Failed to initialize GLAD");
@@ -26,20 +28,21 @@ namespace engine {
 		Vec2 mapSize = Vec2{ 40, 30 };
 		game::Game game = game::Game{ window, mapSize };
 		engine::TiledRender render = engine::TiledRender{ engine::Window{ window, windowSize }, engine::Canvas { Vec2{0, 0}, mapSize } };
+		float loopTime = 0;
+		float frameTime = 0;
+
 		while (!glfwWindowShouldClose(window)) {
-			double frameStart = glfwGetTime();
-
-			const float deltaTime = frame.calculateDeltaTime();
-			std::vector<engine::SimpleTile> tilesVec = game.process(deltaTime);
-			std::span<engine::SimpleTile> tiles = tilesVec;
-			render.draw(tiles);
-
-			double frameEnd = glfwGetTime();
-			double elapsed = frameEnd - frameStart;
-			double sleepTime = TARGET_FRAME_TIME - elapsed;
-
-			if (sleepTime > 0.0) {
-				std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+			loopTime = 0;
+			const float physicsDeltaTime = physicsFrame.calculateDeltaTime();
+			game.physicsProcess(physicsDeltaTime);
+			// Draw/Process loop
+			while (loopTime < TARGET_LOOP_TIME) {
+				const float deltaTime = frame.calculateDeltaTime();
+				game.process(deltaTime);
+				std::vector<engine::SimpleTile> tilesVec = game.draw(deltaTime);
+				std::span<engine::SimpleTile> tiles = tilesVec;
+				render.draw(tiles);
+				loopTime += deltaTime;
 			}
 		}
 		return 1;

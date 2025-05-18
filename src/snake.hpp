@@ -22,13 +22,14 @@ namespace game {
 
 		void move();
 
-		void processInput(GLFWwindow* window, float deltaTime);
 
 		Vec2 normalizeHeadNextPos(Vec2& nextPos) const;
 	public:
 		Snake(SnakeParts snakeParts, Vec2 dir, Vec2 mapLimit);
 
 		void process(GLFWwindow* window, float deltaTime);
+
+		void processInput(GLFWwindow* window, float deltaTime);
 
 		void integrateEatenTile();
 

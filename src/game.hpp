@@ -24,7 +24,11 @@ namespace game {
 
 		~Game();
 
-		std::vector<engine::SimpleTile> process(float deltaTime);
+		void process(float deltaTime);
+
+		void physicsProcess(float deltaTime);
+
+		std::vector<engine::SimpleTile> draw(float deltaTime);
 
 		Vec2 generateRandomMapPosition();
 

@@ -9,8 +9,6 @@ namespace game {
 	}
 
 	void game::Snake::process(GLFWwindow* window, float deltaTime) {
-
-		processInput(window, deltaTime);
 		integrateEatenTile();
 		move();
 	}
