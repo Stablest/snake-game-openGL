@@ -27,7 +27,7 @@ namespace game {
 	game::Game::Game(GLFWwindow* window, Vec2 mapSize)
 		: window(window)
 		, mapSize(mapSize)
-		, snake(SnakeParts{ std::vector<engine::SimpleTile>(1, {Vec2{mapSize.x / 2, mapSize.y / 2 }, Vec3f{0, 0, 0}, 0}) }, Vec2{ 0, 1 }, mapSize)
+		, snake({ std::vector<engine::SimpleTile>(1, {Vec2{mapSize.x / 2, mapSize.y / 2 }, Vec3f{0, 0, 0}, 0}) }, Vec2{ 0, 1 }, mapSize)
 		, food(Vec2{ mapSize.x / 2, 4 + mapSize.y / 2 })
 	{
 		initMap(mapSize);

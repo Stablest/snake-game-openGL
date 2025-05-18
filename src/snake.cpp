@@ -5,7 +5,7 @@
 
 namespace game {
 
-	game::Snake::Snake(SnakeParts parts, Vec2 dir, Vec2 mapLimit) : parts(parts), eatenTiles(std::queue<engine::SimpleTile>()), dir(dir), mapLimit(mapLimit), isEatenTileBuffered(false) {
+	game::Snake::Snake(std::vector<engine::SimpleTile> parts, Vec2 dir, Vec2 mapLimit) : parts(parts), eatenTiles(std::queue<engine::SimpleTile>()), dir(dir), mapLimit(mapLimit), isEatenTileBuffered(false) {
 	}
 
 	void game::Snake::process(GLFWwindow* window, float deltaTime) {
@@ -18,7 +18,7 @@ namespace game {
 			return;
 		}
 		if (isEatenTileBuffered) {
-			parts.tiles.push_back(eatenTiles.front());
+			parts.insert(parts.begin(), eatenTiles.front());
 			eatenTiles.pop();
 		}
 		if (eatenTiles.size() == 0) {
@@ -30,17 +30,16 @@ namespace game {
 	}
 
 	void game::Snake::move() {
-		std::vector<engine::SimpleTile>& localTiles = parts.tiles;
-		if (localTiles.size() == 0) {
-			return; // throw error
+		if (parts.size() == 0) {
+			return;
 		}
-		for (size_t i = 0; i < localTiles.size(); ++i) {
-			if (i + 1 < localTiles.size()) {
-				localTiles[i].position = localTiles[i + 1].position;
+		for (size_t i = 0; i < parts.size(); ++i) {
+			if (i + 1 < parts.size()) {
+				parts[i].position = parts[i + 1].position;
 			}
 			else {
-				Vec2 nextPos = Vec2{ localTiles[i].position.x + dir.x, localTiles[i].position.y + dir.y };
-				localTiles[i].position = normalizeHeadNextPos(nextPos);
+				Vec2 nextPos = Vec2{ parts[i].position.x + dir.x, parts[i].position.y + dir.y };
+				parts[i].position = normalizeHeadNextPos(nextPos);
 			}
 		}
 	}
@@ -95,15 +94,15 @@ namespace game {
 	}
 
 	engine::SimpleTile game::Snake::getHead() {
-		return parts.tiles[0];
+		return parts.front();
 	}
 
 	engine::SimpleTile game::Snake::getTail() {
-		return parts.tiles[parts.tiles.size() - 1];
+		return parts.back();
 	}
 
 	std::vector<engine::SimpleTile> game::Snake::getParts() {
-		return parts.tiles;
+		return parts;
 	}
 
 }

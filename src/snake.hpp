@@ -8,13 +8,9 @@
 
 namespace game {
 
-	struct SnakeParts {
-		std::vector<engine::SimpleTile> tiles;
-	};
-
 	class Snake {
 	private:
-		SnakeParts parts;
+		std::vector<engine::SimpleTile> parts;
 		std::queue<engine::SimpleTile> eatenTiles;
 		Vec2 dir;
 		Vec2 mapLimit;
@@ -25,7 +21,7 @@ namespace game {
 
 		Vec2 normalizeHeadNextPos(Vec2& nextPos) const;
 	public:
-		Snake(SnakeParts snakeParts, Vec2 dir, Vec2 mapLimit);
+		Snake(std::vector<engine::SimpleTile> snakeParts, Vec2 dir, Vec2 mapLimit);
 
 		void process(GLFWwindow* window, float deltaTime);
 
