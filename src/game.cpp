@@ -49,8 +49,8 @@ namespace game {
 		static std::random_device rd;
 		static std::mt19937 gen(rd());
 
-		std::uniform_int_distribution<> distX(0, mapSize.x);
-		std::uniform_int_distribution<> distY(0, mapSize.y);
+		std::uniform_int_distribution<> distX(0, mapSize.x - 1);
+		std::uniform_int_distribution<> distY(0, mapSize.y - 1);
 
 		return Vec2{ distX(gen), distY(gen) };
 	}
